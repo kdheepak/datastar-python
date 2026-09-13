@@ -214,7 +214,7 @@ class AttributeJavascriptTests(unittest.TestCase):
             "".join(
                 [
                     '{"signal_example": "$otherSignal", ',
-                    '"action_example": "\\u0040post(\\"/sse\\")", ',
+                    '"action_example": "@post(\\"/sse\\")", ',
                     '"email_example": "person@example.com", ',
                     '"expression_example": "1 + 1", ',
                     '"quoted_example": "a \\"quoted\\" value"}',
@@ -251,7 +251,7 @@ class AttributeJavascriptTests(unittest.TestCase):
                     '@post("key")': "action-looking key",
                 }
             ),
-            '{"quote\\"\\\\snow\\u96ea": "value", "\\u0040post(\\"key\\")": "action-looking key"}',
+            '{"quote\\"\\\\snow\\u96ea": "value", "@post(\\"key\\")": "action-looking key"}',
         )
 
     def test_non_finite_signal_values_are_rejected_in_both_modes(self) -> None:

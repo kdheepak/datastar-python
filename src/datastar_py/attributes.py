@@ -147,23 +147,7 @@ def javascript(value: object) -> str:
         )
     if isinstance(value, list | tuple):
         return "[" + ", ".join(javascript(item) for item in value) + "]"
-    serialized = json.dumps(value, allow_nan=False)
-    # NOTE: Escape `@` in action-like syntax
-    # Browser decodes \u0040 back to `@` symbol.
-    return re.sub(
-        r"""
-        @                   # Match the action marker.
-        (?=                 # positive lookahead for an action name followed
-                            # by an opening parenthesis. e.g. `@foo(` or `@QUX(`
-            [A-Za-z_$]      # First name character: ASCII letter, underscore, or dollar sign.
-            [A-Za-z0-9_$]*  # Zero or more name characters, also allowing digits.
-            \(              # Opening parenthesis immediately after the name.
-        )
-        """,
-        r"\\u0040",
-        serialized,
-        flags=re.VERBOSE,
-    )
+    return json.dumps(value, allow_nan=False)
 
 
 def _as_javascript_expressions(value: object) -> object:
