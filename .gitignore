@@ -2,3 +2,4 @@
 .idea
 .zed
 __pycache__
+uv.lock
