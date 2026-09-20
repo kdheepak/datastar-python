@@ -263,14 +263,12 @@ def _filters(include: object, exclude: object) -> dict[str, JSExpression]:
         if value is not None and not isinstance(value, str | JSExpression):
             raise TypeError(f"{name} filter must be a string or JSExpression")
     return {
-        key: value if isinstance(value, JSExpression) else _js_regex(value)
+        key: value
+        if isinstance(value, JSExpression)
+        else JSExpression(f"new RegExp({javascript(value)})")
         for key, value in (("include", include), ("exclude", exclude))
         if value is not None
     }
-
-
-def _js_regex(pattern: str) -> JSExpression:
-    return JSExpression(f"new RegExp({javascript(pattern)})")
 
 
 class AttributeGenerator:
