@@ -201,3 +201,27 @@ data = AttributeGenerator(alias="data-star-")
 data = AttributeGenerator(alias="_data-")
 html.button("My Button", **data.on("click", "console.log('clicked')").debounce("1s").stop)
 ```
+
+## Action Generation Helper
+
+datastar-py also includes helpers to generator Datastar actions and compose them with generated
+attributes.
+
+```python
+from datastar_py import attribute_generator as data
+from datastar_py import action_generator as actions
+
+submit = data.on(
+    "submit",
+    actions.post(
+        "/contacts",
+        content_type="form",
+        retry="never",
+        request_cancellation="cleanup",
+        headers={"X-View": data.JSExpression("el.dataset.viewId")},
+    ),
+)
+```
+
+The fetch helpers are `get`, `post`, `put`, `patch`, and `delete` with keyword-only options for
+signal filters, form selection, headers, payloads, retries, visibility, and request cancellation.
