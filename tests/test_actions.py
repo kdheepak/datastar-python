@@ -3,14 +3,15 @@ import math
 
 import pytest
 
+from datastar_py import action_generator as actions
 from datastar_py import attribute_generator as ds
 
 FETCH_METHODS = [
-    ds.actions.get,
-    ds.actions.post,
-    ds.actions.put,
-    ds.actions.patch,
-    ds.actions.delete,
+    actions.get,
+    actions.post,
+    actions.put,
+    actions.patch,
+    actions.delete,
 ]
 
 
@@ -21,7 +22,7 @@ def test_fetch_methods_serialize_literal_urls(method) -> None:
 
 
 def test_fetch_options_serialize_with_javascript_types() -> None:
-    assert ds.actions.post(
+    assert actions.post(
         ds.JSExpression('"/expression"'),
         content_type="json",
         headers={
@@ -60,10 +61,10 @@ def test_none_omits_options_and_expressions_can_send_null(method) -> None:
 
 
 def test_form_and_empty_options_are_preserved() -> None:
-    assert ds.actions.post("/", content_type="form", selector="#form") == (
+    assert actions.post("/", content_type="form", selector="#form") == (
         '@post("/", {"contentType": "form", "selector": "#form"})'
     )
-    assert ds.actions.get(
+    assert actions.get(
         "/", open_when_hidden=False, retry_max_count=0, headers={}, include_signals=""
     ) == (
         '@get("/", {"headers": {}, "openWhenHidden": false, "retryMaxCount": 0, '
@@ -72,7 +73,7 @@ def test_form_and_empty_options_are_preserved() -> None:
 
 
 def test_signal_actions_serialize_data_expressions_and_filters() -> None:
-    assert ds.actions.set_all(
+    assert actions.set_all(
         {"literal": "$token", "expression": ds.JSExpression("1 + 1")},
         include="^public",
         exclude="private",
@@ -81,12 +82,12 @@ def test_signal_actions_serialize_data_expressions_and_filters() -> None:
         '{"include": (new RegExp("^public")), '
         '"exclude": (new RegExp("private"))})'
     )
-    assert ds.actions.toggle_all() == "@toggleAll()"
-    assert ds.actions.peek(ds.JSExpression("{answer: 42}")) == ("@peek(() => ({answer: 42}))")
+    assert actions.toggle_all() == "@toggleAll()"
+    assert actions.peek(ds.JSExpression("{answer: 42}")) == ("@peek(() => ({answer: 42}))")
 
 
 def test_fetch_signatures_expose_the_same_keyword_only_options() -> None:
-    expected = inspect.signature(ds.actions.get)
+    expected = inspect.signature(actions.get)
     for method in FETCH_METHODS:
         assert inspect.signature(method) == expected
         assert all(
@@ -120,16 +121,16 @@ def test_fetch_signatures_expose_the_same_keyword_only_options() -> None:
 )
 def test_fetch_validation(options, error, message) -> None:
     with pytest.raises(error, match=message):
-        ds.actions.post("/", **options)
+        actions.post("/", **options)
 
 
 @pytest.mark.parametrize(("url", "error"), ((None, TypeError), ("", ValueError)))
 def test_url_validation(url, error) -> None:
     with pytest.raises(error, match="url"):
-        ds.actions.get(url)
+        actions.get(url)
 
 
 def test_action_wrapper_validation() -> None:
-    assert not hasattr(ds.actions, "JSRegex")
+    assert not hasattr(actions, "JSRegex")
     with pytest.raises(TypeError, match="JSExpression"):
-        ds.actions.peek("$token")
+        actions.peek("$token")
