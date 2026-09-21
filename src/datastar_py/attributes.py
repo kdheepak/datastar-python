@@ -440,10 +440,6 @@ class AttributeGenerator:
         """(PRO) Sync the query string with signal values."""
         return QueryStringAttr(alias=self._alias)
 
-    @property
-    def actions(self) -> ActionGenerator:
-        return action_generator
-
 
 class BaseAttr(Mapping):
     _attr: str
