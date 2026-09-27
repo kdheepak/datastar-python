@@ -299,7 +299,7 @@ class AttributeGenerator:
         val = javascript(_as_javascript_expressions(signals) if expressions_ else signals)
         return SignalsAttr(value=val, alias=self._alias)
 
-    def computed(self, computed_dict: Mapping | None = None, /, **computed: str) -> BaseAttr:
+    def computed(self, computed_dict: Mapping[str, str] | None = None, /, **computed: str) -> BaseAttr:
         """Create signals that are computed based on an expression."""
         computed = {**(computed_dict or {}), **computed}
         first, *rest = (
@@ -318,7 +318,7 @@ class AttributeGenerator:
         """Tell Datastar to ignore data-* attributes on the element."""
         return IgnoreAttr(alias=self._alias)
 
-    def attr(self, attr_dict: Mapping | None = None, /, **attrs: str) -> BaseAttr:
+    def attr(self, attr_dict: Mapping[str, str] | None = None, /, **attrs: str) -> BaseAttr:
         """Set the value of any HTML attributes to expressions, and keep them in sync."""
         attrs = {**(attr_dict or {}), **attrs}
         return BaseAttr(
@@ -331,7 +331,7 @@ class AttributeGenerator:
         """Set up two-way data binding between a signal and an element's value."""
         return BindAttr(value=signal_name, alias=self._alias)
 
-    def class_(self, class_dict: Mapping | None = None, /, **classes: str) -> BaseAttr:
+    def class_(self, class_dict: Mapping[str, str] | None = None, /, **classes: str) -> BaseAttr:
         """Add or removes classes to or from an element based on expressions."""
         classes = {**(class_dict or {}), **classes}
         return BaseAttr(
@@ -390,7 +390,7 @@ class AttributeGenerator:
         """Show or hides an element based on whether an expression evaluates to true or false."""
         return BaseAttr("show", value=expression, alias=self._alias)
 
-    def style(self, style_dict: Mapping | None = None, /, **styles: str) -> BaseAttr:
+    def style(self, style_dict: Mapping[str, str] | None = None, /, **styles: str) -> BaseAttr:
         """Set the value of inline CSS styles on an element based on an expression, and keeps them in sync."""
         styles = {**(style_dict or {}), **styles}
         return BaseAttr(
@@ -441,7 +441,7 @@ class AttributeGenerator:
         return QueryStringAttr(alias=self._alias)
 
 
-class BaseAttr(Mapping):
+class BaseAttr(Mapping[str, str | Literal[True]]):
     _attr: str
 
     def __init__(
@@ -526,6 +526,8 @@ class BaseAttr(Mapping):
 
 
 class TimingMod:
+    _mods: dict[str, list[str]]
+
     def debounce(
         self: Self,
         wait: int | str,
@@ -572,6 +574,9 @@ class TimingMod:
 
 
 class DelayMod:
+
+    _mods: dict[str, list[str]]
+
     def delay(
         self: Self,
         wait: int | str,
@@ -585,6 +590,10 @@ class DelayMod:
 
 
 class ViewtransitionMod:
+
+
+    _mods: dict[str, list[str]]
+
     @property
     def viewtransition(self: Self) -> Self:
         """Wrap the expression in document.startViewTransition()."""
@@ -899,8 +908,8 @@ def _escape(s: str) -> str:
     )
 
 
-def _filter_dict(include: str | None = None, exclude: str | None = None) -> dict:
-    filter_dict = {}
+def _filter_dict(include: str | None = None, exclude: str | None = None) -> dict[str, str]:
+    filter_dict: dict[str, str] = {}
     if include:
         filter_dict["include"] = include
     if exclude:
