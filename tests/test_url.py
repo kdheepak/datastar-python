@@ -17,14 +17,14 @@ import datastar_py
         ("v1.0.0-RC.7", "@v1.0.0-RC.7"),
     ),
 )
-def test_datastar_url_versions(version, ref):
-    assert datastar_py.datastar_url(version) == (
+def test_url_versions(version, ref):
+    assert datastar_py.url(version) == (
         f"https://cdn.jsdelivr.net/gh/starfederation/datastar{ref}/bundles/datastar.js"
     )
 
 
-def test_datastar_url_default():
-    assert datastar_py.datastar_url() == (
+def test_url_default():
+    assert datastar_py.url() == (
         "https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"
     )
 
@@ -46,12 +46,12 @@ def test_datastar_url_default():
         "v1#fragment",
     ),
 )
-def test_datastar_url_rejects_invalid_versions(version):
+def test_url_rejects_invalid_versions(version):
     with pytest.raises(ValueError, match="version"):
-        datastar_py.datastar_url(version)
+        datastar_py.url(version)
 
 
 @pytest.mark.parametrize("version", (1, 1.0, True, b"v1", [], {}))
-def test_datastar_url_rejects_invalid_types(version):
+def test_url_rejects_invalid_types(version):
     with pytest.raises(TypeError, match="version must be a string or None"):
-        datastar_py.datastar_url(version)
+        datastar_py.url(version)

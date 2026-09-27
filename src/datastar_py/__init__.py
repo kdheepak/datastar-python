@@ -13,11 +13,11 @@ __all__ = [
     "ServerSentEventGenerator",
     "action_generator",
     "attribute_generator",
-    "datastar_url",
+    "url",
 ]
 
 
-def datastar_url(version: str = "") -> str:
+def url(version: str = "") -> str:
     """Return the jsDelivr URL for the Datastar JavaScript module.
 
     Accepts major, minor, or exact versions with an optional ``v`` prefix.
