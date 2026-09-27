@@ -17,24 +17,24 @@ __all__ = [
 ]
 
 
-def datastar_url(version: str | None = None) -> str:
+def datastar_url(version: str = "") -> str:
     """Return the jsDelivr URL for the Datastar JavaScript module.
 
     Accepts major, minor, or exact versions with an optional ``v`` prefix.
     Major, minor, and omitted versions can resolve to the latest release.
     """
+    if not isinstance(version, str):
+        raise TypeError("version must be a string or None")
     ref = ""
-    if version is not None:
-        if not isinstance(version, str):
-            raise TypeError("version must be a string or None")
+    if version != "":
         if not re.fullmatch(
             r"v?[0-9]+(?:\.[0-9]+(?:\.[0-9]+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?)?)?",
-            version,
+            version.strip(),
         ):
             raise ValueError(
                 "version must be a valid jsdelivr compatible string, such as 'v1', '1.0', or '1.0.4'"
             )
-        ref = f"@v{version.removeprefix('v')}"
+        ref = f"@v{version.strip().removeprefix('v')}"
     return f"https://cdn.jsdelivr.net/gh/starfederation/datastar{ref}/bundles/datastar.js"
 
 
