@@ -299,7 +299,9 @@ class AttributeGenerator:
         val = javascript(_as_javascript_expressions(signals) if expressions_ else signals)
         return SignalsAttr(value=val, alias=self._alias)
 
-    def computed(self, computed_dict: Mapping[str, str] | None = None, /, **computed: str) -> BaseAttr:
+    def computed(
+        self, computed_dict: Mapping[str, str] | None = None, /, **computed: str
+    ) -> BaseAttr:
         """Create signals that are computed based on an expression."""
         computed = {**(computed_dict or {}), **computed}
         first, *rest = (
@@ -574,7 +576,6 @@ class TimingMod:
 
 
 class DelayMod:
-
     _mods: dict[str, list[str]]
 
     def delay(
@@ -590,8 +591,6 @@ class DelayMod:
 
 
 class ViewtransitionMod:
-
-
     _mods: dict[str, list[str]]
 
     @property
